@@ -1,3 +1,4 @@
+```mermaid
 sequenceDiagram
     participant browser
     participant server
@@ -9,3 +10,4 @@ sequenceDiagram
     Note left of server: Server runs script to add note to notes list
     server-->>browser: 201 (created)
     deactivate server
+```
