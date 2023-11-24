@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Entries from './components/Entries'
 import AddEntryForm from './components/AddEntryForm'
 import Filter from './components/Filter'
-import axios from 'axios'
+import requests from './services/requests'
 
 
 const App = () => {
@@ -12,22 +12,25 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        setPersons(response.data)
+    requests
+      .getAll()
+      .then(allPersons => {
+        setPersons(allPersons)
       })
     }   
   , [])
 
   const addPerson = (event) => {
     let addable = true
+    let updateNumberOnly = false
     event.preventDefault()
-    if (persons.map(person => person.key).includes(newName.trim().toLowerCase())) {
-      alert(`${newName.trim()} is already in the phone book!`)
-      addable = false
+    if (persons.map(person => person.name.trim().toLowerCase()).includes(newName.trim().toLowerCase())) {
+      if (window.confirm(`${newName.trim()} is already in the phone book. Would you like to replace the existing number with the new one?`)) {
+        updateNumberOnly = true
+      }
+        else addable = false
     }
-    else if (newName.trim() === '') {
+    if (newName.trim() === '') {
       alert(`Please enter a name!`)
       addable = false
     }
@@ -35,14 +38,41 @@ const App = () => {
       alert(`Please add a number for ${newName.trim()}!`)
       addable = false
     }
-    if (addable) {
-      setPersons(persons.concat({
-        name: newName, 
-        number: newNumber, 
-        key: newName.trim().toLowerCase()
-      }))
+    if (addable && !updateNumberOnly) {
+      const newPerson = {
+        name: newName.trim(), 
+        number: newNumber.trim(), 
+      }
+      requests
+        .create(newPerson)
+        .then(personToAdd => {
+          setPersons(persons.concat(personToAdd))
+        })
       setNewName('')
       setNewNumber('')
+    }
+    else if (addable && updateNumberOnly) {
+      const matchingPerson = persons.find(person => person.name.trim().toLowerCase() === newName.trim().toLowerCase())
+      const updatedPerson = {...matchingPerson, number: newNumber}
+      const id = updatedPerson.id
+      requests
+        .update(id, updatedPerson)
+        .then(personToUpdate => {
+          setPersons(persons.map(person => person.id === id ? updatedPerson : person))
+        })
+      setNewName('')
+      setNewNumber('')
+    }
+  }
+
+  const triggerRemoval = (id, name) => {
+    if(window.confirm(`Do you really want to delete ${name}?`)) {
+      requests
+        .remove(id)
+        .catch(error => {
+          alert(`${name} has already been deleted!`)
+        })
+        setPersons(persons.filter((person) => person.id !== id))
     }
   }
 
@@ -71,6 +101,7 @@ const App = () => {
         <Entries 
           persons={persons.filter(person => 
             person.name.toLowerCase().includes(newFilter.toLowerCase()))}
+          triggerRemoval={triggerRemoval}
         />
       </ul>
     </div>
