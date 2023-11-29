@@ -1,4 +1,4 @@
-const Message = ({error, message}) => {
+const Message = ({ error, message }) => {
     const successStyle = {
         color: 'green',
         background: 'lightgrey',
@@ -6,7 +6,7 @@ const Message = ({error, message}) => {
         borderStyle: 'solid',
         borderRadius: 5,
         padding: 10,
-        marginBottom: 10    
+        marginBottom: 10
     }
     const errorStyle = {
         color: 'red',
@@ -18,7 +18,7 @@ const Message = ({error, message}) => {
         marginBottom: 10
     }
     const selectedStyle = error ? errorStyle : successStyle
-    
+
     if (message === null) return null
     else return (
         <div style={selectedStyle}>

@@ -1,4 +1,9 @@
-const AddEntryForm = ({newName, newNumber, handleInputChange, handleNumberChange, addPerson}) => {
+const AddEntryForm = ({
+    newName,
+    newNumber,
+    handleInputChange,
+    handleNumberChange,
+    addPerson }) => {
     return (
         <form>
             <div>
@@ -8,7 +13,11 @@ const AddEntryForm = ({newName, newNumber, handleInputChange, handleNumberChange
                 Number: <input value={newNumber} onChange={handleNumberChange} />
             </div>
             <div>
-                <button type="submit" onClick={addPerson}>Add entry to phonebook</button>
+                <button
+                    type="submit"
+                    onClick={addPerson}>
+                    Add entry to phonebook
+                </button>
             </div>
         </form>
     )

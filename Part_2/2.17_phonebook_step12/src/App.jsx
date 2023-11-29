@@ -21,31 +21,35 @@ const App = () => {
       .then(allPersons => {
         setPersons(allPersons)
       })
-    }   
-  , [])
+  }
+    , [])
 
   const addPerson = (event) => {
+    event.preventDefault()
     let addable = true
     let updateNumberOnly = false
-    event.preventDefault()
-    if (persons.map(person => person.name.trim().toLowerCase()).includes(newName.trim().toLowerCase())) {
-      if (window.confirm(`${newName.trim()} is already in the phone book. Would you like to replace the existing number with the new one?`)) {
+    const personNames = persons.map(person => person.name.trim().toLowerCase())
+    if (personNames.includes(newName.trim().toLowerCase())) {
+      if (window.confirm(`${newName.trim()} is already in the phone book.
+ Would you like to replace the existing number with the new one?`)) {
         updateNumberOnly = true
       }
-        else addable = false
+      else addable = false
     }
     if (newName.trim() === '') {
       broadcastMessage(`Please enter a name!`, 'errorMessage')
       addable = false
     }
     else if (newNumber.trim() === '') {
-      broadcastMessage(`Please add a number for ${newName.trim()}!`, 'errorMessage')
+      broadcastMessage(
+        `Please add a number for ${newName.trim()}!`
+        , 'errorMessage')
       addable = false
     }
     if (addable && !updateNumberOnly) {
       const newPerson = {
-        name: newName.trim(), 
-        number: newNumber.trim(), 
+        name: newName.trim(),
+        number: newNumber.trim(),
       }
       requests
         .create(newPerson)
@@ -57,9 +61,9 @@ const App = () => {
       setNewNumber('')
     }
     else if (addable && updateNumberOnly) {
-      const matchingPerson = persons.find(person => 
+      const matchingPerson = persons.find(person =>
         person.name.trim().toLowerCase() === newName.trim().toLowerCase())
-      const updatedPerson = {...matchingPerson, number: newNumber}
+      const updatedPerson = { ...matchingPerson, number: newNumber }
       const id = updatedPerson.id
       requests
         .update(id, updatedPerson)
@@ -87,13 +91,13 @@ const App = () => {
     const tid = setTimeout(() => {
       setMessage(null)
       setTimeoutId(null)
-    }  
-    , 4000)
+    }
+      , 4000)
     setTimeoutId(tid)
   }
 
   const triggerRemoval = (id, name) => {
-    if(window.confirm(`Do you really want to delete ${name}?`)) {
+    if (window.confirm(`Do you really want to delete ${name}?`)) {
       requests
         .remove(id)
         .catch(error => {
@@ -102,7 +106,7 @@ const App = () => {
             'errorMessage'
           )
         })
-        setPersons(persons.filter((person) => person.id !== id))
+      setPersons(persons.filter((person) => person.id !== id))
     }
   }
 
@@ -113,7 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Message error={error} message={message}/>
+      <Message error={error} message={message} />
       <span>Filter names inlcuding: </span>
       <Filter
         newFilter={newFilter}
@@ -129,8 +133,8 @@ const App = () => {
       />
       <h2>Saved numbers:</h2>
       <ul>
-        <Entries 
-          persons={persons.filter(person => 
+        <Entries
+          persons={persons.filter(person =>
             person.name.toLowerCase().includes(newFilter.toLowerCase()))}
           triggerRemoval={triggerRemoval}
         />
