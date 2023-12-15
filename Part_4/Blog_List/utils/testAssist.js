@@ -1,3 +1,6 @@
+const Blog = require('../models/blog')
+const User = require('../models/user')
+
 const initialBlogs = [
   {
     title: 'First Test',
@@ -25,4 +28,32 @@ const initialBlogs = [
   }
 ]
 
-module.exports = { initialBlogs }
+const initialUsers = [
+  {
+    username: 'First Test',
+    passwordHash: '$2b$10$PZOKsRER6SO3dH2vz5Mgtuq7aqdBF.puFecFIViiP84YXLPrJQEAu',
+    name: 'First'
+  },
+  {
+    username: 'Second Test',
+    passwordHash: '$2b$10$PZOKsRER6SO3dH2vz5Mgtuq7aqdBF.puFecFIViiP84YXLPrJQEAu',
+    name: 'Second'
+  },
+  {
+    username: 'Third Test',
+    passwordHash: '$2b$10$PZOKsRER6SO3dH2vz5Mgtuq7aqdBF.puFecFIViiP84YXLPrJQEAu',
+    name: 'Third'
+  }
+]
+
+const findUserId = async (username) => {
+  const user = await User.find({ username })
+  return user.id
+}
+
+const findBlogId = async (title) => {
+  const blog = await Blog.find({ title })
+  return blog.id
+}
+
+module.exports = { initialBlogs, initialUsers, findUserId, findBlogId }
