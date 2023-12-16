@@ -1,15 +1,11 @@
 const supertest = require('supertest')
 const testAssist = require('../utils/testAssist')
 const mongoose = require('mongoose')
-const User = require('../models/user')
 const app = require('../app')
 const api = supertest(app)
 
 describe('Adding a user', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-    await User.insertMany(testAssist.initialUsers)
-  })
+  beforeEach(async () => await testAssist.insertInitialUsers())
 
   test('with correct credentials is saved to the database.', async () => {
     const newUserWithName = {
@@ -30,7 +26,8 @@ describe('Adding a user', () => {
     const matchingUser1 = {
       username: newUserWithName.username,
       name: newUserWithName.name,
-      id: response1.body.id
+      id: response1.body.id,
+      blogs: []
     }
 
     const response2 = await api
@@ -39,7 +36,8 @@ describe('Adding a user', () => {
       .expect(201)
     const matchingUser2 = {
       username: newUserWithoutName.username,
-      id: response2.body.id
+      id: response2.body.id,
+      blogs: []
     }
 
     const usersInDb = await api
@@ -65,7 +63,6 @@ describe('Adding a user', () => {
     const usersInDb = await api
       .get('/api/users')
       .expect(200)
-    console.log(usersInDb.body)
     expect(usersInDb.body.length).toBe(testAssist.initialUsers.length)
     const names = usersInDb.body.map(user => user.name)
     expect(names).not.toContain(newUser.name)
@@ -83,6 +80,28 @@ describe('Adding a user', () => {
       .expect(400)
     expect(unsuccessfulAttempt.body.error)
       .toContain('User must have a password')
+
+    const usersInDb = await api
+      .get('/api/users')
+      .expect(200)
+    expect(usersInDb.body.length).toBe(testAssist.initialUsers.length)
+    const names = usersInDb.body.map(user => user.name)
+    expect(names).not.toContain(newUser.name)
+  })
+
+  test('with an already existing username is not saved to the database', async () => {
+    const newUser = {
+      username: testAssist.initialUsers[0].username,
+      password: 'biggie smallz',
+      name: 'This object has a duplicate username and will not be saved'
+    }
+
+    const unsuccessfulAttempt = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+    expect(unsuccessfulAttempt.body.error)
+      .toContain('Username already exists')
 
     const usersInDb = await api
       .get('/api/users')
