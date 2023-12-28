@@ -1,10 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJlbGF0aW9uc2hpcEV4cGVydCIsImlkIjoiNjU3YmE0NjUyOGVhZDE1YTE2ODU0Y2E3IiwiaWF0IjoxNzAyNjEzODQwfQ.8_93Qm_znXCEOUmXHcLHDhNrgIs_qgyQeXyS6rWKs5Y
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJlbGF0aW9uc2hpcEV4cGVydCIsImlkIjoiNjU3YmE0NjUyOGVhZDE1YTE2ODU0Y2E3IiwiaWF0IjoxNzAzMjgzNTU5fQ.n-JbexJnA_T6jlZV456yWn2GFiFCPw_686PnDnoJxxc
 
 {
-  "title": "It all still somehow works",
+  "title": "Hmmmmm",
   "author": "Tom A",
-  "url": "www.testurl10.com",
-  "likes": "12"
+  "url": "www.testurl10.com"
 }
