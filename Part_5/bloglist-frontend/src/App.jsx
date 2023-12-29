@@ -97,8 +97,7 @@ const App = () => {
     const tid = setTimeout(() => {
       setMessage(null)
       setTimeoutId(null)
-    }
-      , 4000)
+    }, 4000)
     setTimeoutId(tid)
   }
 

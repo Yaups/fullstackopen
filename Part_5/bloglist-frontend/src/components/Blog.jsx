@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog, handleDeletion, handleUpvote, user }) => {
+const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const blogStyle = {
@@ -26,7 +27,7 @@ const Blog = ({ blog, handleDeletion, handleUpvote, user }) => {
       <br />
       Posted by {blog.user.name}.
       <br />
-      {blog.user.username == user.username && deleteButton()}
+      {blog.user.username === user.username && deleteButton()}
     </div>
   )
 
@@ -39,6 +40,13 @@ const Blog = ({ blog, handleDeletion, handleUpvote, user }) => {
       {isExpanded && extraInfo()}
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  handleDeletion: PropTypes.func.isRequired,
+  handleUpvote: PropTypes.func.isRequired
 }
 
 export default Blog

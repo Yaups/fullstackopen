@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = props => {
 
@@ -16,6 +17,10 @@ const Togglable = props => {
       </button>
     </div >
   )
+}
+
+Togglable.propTypes = {
+  buttonText: PropTypes.string.isRequired
 }
 
 export default Togglable

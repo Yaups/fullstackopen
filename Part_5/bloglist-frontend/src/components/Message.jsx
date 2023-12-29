@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const Message = ({ error, message }) => {
   if (!message) return null
 
@@ -19,6 +21,10 @@ const Message = ({ error, message }) => {
       {message}
     </div>
   )
+}
+
+Message.propTypes = {
+  message: PropTypes.string.isRequired
 }
 
 export default Message
