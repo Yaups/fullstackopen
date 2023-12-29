@@ -1,27 +1,25 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import Togglable from './components/Togglable'
 import Message from './components/Message'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import axios from 'axios'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [sortedBlogs, setSortedBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
   const [error, setError] = useState(false)
   const [message, setMessage] = useState(null)
   const [timeoutId, setTimeoutId] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService
+      .getAll()
+      .then(blogs => setBlogs(blogs))
   }, [])
-
 
   useEffect(() => {
     const existingUser = JSON.parse(window.localStorage.getItem('user'))
@@ -30,15 +28,19 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes))
+  }, [blogs])
 
-  const login = async () => {
+  const performLogin = async (username, password) => {
     try {
       const response = await axios.post('/api/login', ({ username, password }))
-      setUsername('')
-      setPassword('')
-      return response
-    }
-    catch {
+
+      if (response) {
+        setUser(response.data)
+        window.localStorage.setItem('user', JSON.stringify(response.data))
+      }
+    } catch {
       broadcastMessage('Login failed. Check username/password and connection to server.', 'errorMessage')
     }
   }
@@ -48,44 +50,50 @@ const App = () => {
     window.localStorage.removeItem('user')
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    const response = await login()
-    if (response) {
-      setUser(response.data)
-      window.localStorage.setItem('user', JSON.stringify(response.data))
-    }
-  }
-
-  const handleBlogSubmit = async event => {
-    event.preventDefault()
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `bearer ${user.token}`
-    }
-    const newBlog = {
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl
-    }
+  const postBlog = async newBlog => {
     try {
-      const postedBlogResponse = await axios.post('/api/blogs', newBlog, { headers })
-      setBlogs([...blogs, postedBlogResponse.data])
-      broadcastMessage(`New blog added: ${postedBlogResponse.data.title}`)
-      setBlogTitle('')
-      setBlogAuthor('')
-      setBlogUrl('')
+      const verifiedBlog = await blogService.post(newBlog, user.token)
+      const blogToAdd = { ...verifiedBlog, user: { name: user.name, username: user.username } }
+      setBlogs([...blogs, blogToAdd])
+      broadcastMessage(`New blog added: ${verifiedBlog.title}`)
     }
     catch {
       broadcastMessage('Posting blog failed. Perhaps login has timed out?', 'errorMessage')
     }
   }
 
-  const broadcastMessage = (msg, messageType) => {
+  const upvoteBlog = async (id, blogToUpdate) => {
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 }
+    try {
+      const upvoteResponse = await blogService.update(id, updatedBlog)
+      const blogToAdd = { ...upvoteResponse, user: { name: blogToUpdate.user.name, username: blogToUpdate.user.username } }
+      const blogsWithOldRemoved = blogs.filter(blog => blog.id !== id)
+      const blogsWithNewUpvote = [...blogsWithOldRemoved, blogToAdd]
+      setBlogs(blogsWithNewUpvote)
+    }
+    catch {
+      broadcastMessage('Upvote failed.', 'errorMessage')
+    }
+  }
+
+  const deleteBlog = async id => {
+    if (window.confirm('Would you really like to delete this post?')) {
+      try {
+        await blogService.remove(id, user.token)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        broadcastMessage('Blog deleted successfully.')
+      }
+      catch {
+        broadcastMessage('Failed to delete blog. Perhaps you are not the blog poster?', 'errorMessage')
+      }
+    }
+  }
+
+  const broadcastMessage = (text, messageType) => {
     const isError = messageType === 'errorMessage' ? true : false
     clearTimeout(timeoutId)
     setError(isError)
-    setMessage(msg)
+    setMessage(text)
     const tid = setTimeout(() => {
       setMessage(null)
       setTimeoutId(null)
@@ -95,18 +103,7 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <div>
-      <h2>Log in:</h2>
-      <form>
-        Username: {''}
-        <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} />
-        <br />
-        Password: {''}
-        <input type='password' value={password} onChange={({ target }) => setPassword(target.value)} />
-        <br />
-        <button type='submit' onClick={handleLogin}>Log in</button>
-      </form>
-    </div>
+    <LoginForm performLogin={performLogin} />
   )
 
   const blogsList = () => (
@@ -117,42 +114,30 @@ const App = () => {
       <hr />
       <p></p>
       <h2>Blogs:</h2>
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
+          user={user}
+          handleDeletion={deleteBlog}
+          handleUpvote={upvoteBlog}
         />
       )}
       <hr />
-      <h2>Post a new blog:</h2>
-      <form>
-        Title: {''} <input
-          type='text'
-          value={blogTitle}
-          onChange={({ target }) => setBlogTitle(target.value)}
-        />
-        <br />
-        Author: {''} <input
-          type='text'
-          value={blogAuthor}
-          onChange={({ target }) => setBlogAuthor(target.value)}
-        />
-        <br />
-        URL: {''} <input
-          type='text'
-          value={blogUrl}
-          onChange={({ target }) => setBlogUrl(target.value)}
-        />
-        <br />
-        <button type='submit' onClick={handleBlogSubmit}>Add blog</button>
-      </form>
+
+      <Togglable buttonText='Post a new blog'>
+        <h2>Post a new blog:</h2>
+        <BlogForm postBlog={postBlog} />
+      </Togglable>
     </div>
   )
 
   return (
     <div>
       <Message error={error} message={message} />
+
       {!user && loginForm()}
+
       {user && blogsList()}
     </div>
   )
