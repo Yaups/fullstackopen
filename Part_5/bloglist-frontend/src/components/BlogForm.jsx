@@ -31,6 +31,7 @@ const BlogForm = ({ postBlog }) => {
         value={blogTitle}
         onChange={({ target }) => setBlogTitle(target.value)}
         placeholder='Title of blog'
+        id='blogForm-title-input'
       />
       <br />
       Author: {''}
@@ -39,6 +40,7 @@ const BlogForm = ({ postBlog }) => {
         value={blogAuthor}
         onChange={({ target }) => setBlogAuthor(target.value)}
         placeholder='Author of blog'
+        id='blogForm-author-input'
       />
       <br />
       URL: {''}
@@ -47,9 +49,16 @@ const BlogForm = ({ postBlog }) => {
         value={blogUrl}
         onChange={({ target }) => setBlogUrl(target.value)}
         placeholder='Link to blog post'
+        id='blogForm-url-input'
       />
       <br />
-      <button type='submit' onClick={handleBlogSubmit}>Add blog</button>
+      <button
+        type='submit'
+        onClick={handleBlogSubmit}
+        id='blogForm-post-button'
+      >
+        Add blog
+      </button>
     </form>
   )
 }

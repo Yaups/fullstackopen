@@ -23,6 +23,7 @@ const LoginForm = ({ performLogin }) => {
           type='text'
           value={username}
           onChange={({ target }) => setUsername(target.value)}
+          id='login-username'
         />
         <br />
         Password: {''}
@@ -30,9 +31,16 @@ const LoginForm = ({ performLogin }) => {
           type='password'
           value={password}
           onChange={({ target }) => setPassword(target.value)}
+          id='login-password'
         />
         <br />
-        <button type='submit' onClick={handleSubmit}>Log in</button>
+        <button
+          type='submit'
+          onClick={handleSubmit}
+          id='login-button'
+        >
+          Log in
+        </button>
       </form>
     </div >
   )

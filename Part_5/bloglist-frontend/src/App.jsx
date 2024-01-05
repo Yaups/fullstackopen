@@ -124,7 +124,7 @@ const App = () => {
       )}
       <hr />
 
-      <Togglable buttonText='Post a new blog'>
+      <Togglable buttonText='Open new blog form'>
         <h2>Post a new blog:</h2>
         <BlogForm postBlog={postBlog} />
       </Togglable>

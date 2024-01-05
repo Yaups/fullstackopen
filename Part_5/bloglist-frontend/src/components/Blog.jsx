@@ -32,7 +32,7 @@ const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
   )
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} - {blog.author} {''}
       <button onClick={() => setIsExpanded(!isExpanded)}>
         {isExpanded ? 'Hide' : 'Show'}
