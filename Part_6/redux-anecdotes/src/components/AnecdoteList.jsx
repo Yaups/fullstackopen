@@ -17,12 +17,15 @@ const Anecdote = ({ anecdote, handleUpvote }) => {
 }
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state =>
+    state.anecdotes.filter(a =>
+      a.content.toLowerCase().includes(state.filter.toLowerCase())
+    )
+  )
+
   const dispatch = useDispatch()
 
   const vote = id => {
-    console.log('vote', id)
-
     dispatch(applyUpvote(id))
   }
 
