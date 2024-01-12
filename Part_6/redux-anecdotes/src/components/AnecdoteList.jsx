@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { applyUpvote } from '../reducers/anecdoteReducer'
+import { upvoteAnecdote } from '../reducers/anecdoteReducer'
 import { setNotificationText } from '../reducers/notificationReducer'
 import PropTypes from 'prop-types'
 
@@ -29,8 +29,8 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const vote = ({ id, content }) => {
-    dispatch(applyUpvote(id))
-    dispatch(setNotificationText(`You voted for "${content}"`))
+    dispatch(upvoteAnecdote(id))
+    dispatch(setNotificationText(`You voted for "${content}"`, 5))
   }
 
   return (
