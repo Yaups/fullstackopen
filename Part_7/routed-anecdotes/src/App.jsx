@@ -1,110 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-
-import { Link, Routes, Route, useMatch, useNavigate } from 'react-router-dom'
-
-const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
-
-  return (
-    <div>
-      <Link style={padding} to='/anecdotes'>Anecdotes</Link>
-      <Link style={padding} to='/create'>Create new</Link>
-      <Link style={padding} to='/about'>About</Link>
-    </div>
-  )
-}
-
-const AnecdoteList = ({ anecdotes }) => (
-  <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote =>
-        <li key={anecdote.id} >
-          <a href={`/anecdotes/${anecdote.id}`}>{anecdote.content}</a>
-        </li>)}
-    </ul>
-  </div>
-)
-
-const Anecdote = ({ anecdote }) => (
-  <div>
-    <h2>{anecdote.content} by {anecdote.author}</h2>
-    <br />
-    Votes: {anecdote.votes}
-    <br />
-    <br />
-    <li>More info: <a href={anecdote.info}>{anecdote.info}</a></li>
-  </div>
-)
-
-const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
-
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
-
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
-)
-
-const Footer = () => (
-  <div>
-    <br />
-    Anecdote app for <a href='https://fullstackopen.com/'>Full Stack Open</a>.
-
-    See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js</a> for the source code.
-  </div>
-)
-
-const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
-  const navigate = useNavigate()
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-
-    navigate('/anecdotes')
-    props.broadcastMessage(`New anecdote ${content} created!`)
-  }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
-    </div>
-  )
-
-}
+import Menu from './components/Menu'
+import AnecdoteList from './components/AnecdoteList'
+import Anecdote from './components/Anecdote'
+import About from './components/About'
+import Footer from './components/Footer'
+import CreateNew from './components/CreateNew'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
