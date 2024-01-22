@@ -14,8 +14,7 @@ logger.info('Connecting to MongoDB.')
 mongoose
   .connect(config.MONGODB_URI)
   .then(() => logger.info('Connected to MongoDB.'))
-  .catch(error => logger.error(error))
-
+  .catch((error) => logger.error(error))
 
 app.use(cors())
 app.use(express.json())

@@ -1,6 +1,11 @@
-import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
-const Message = ({ error, message }) => {
+const Message = () => {
+  const [message, error] = useSelector(({ message }) => [
+    message.text,
+    message.error,
+  ])
+
   if (!message) return null
 
   const baseStyle = {
@@ -13,7 +18,6 @@ const Message = ({ error, message }) => {
   }
   const errorStyle = { ...baseStyle, color: 'red' }
   const successStyle = { ...baseStyle, color: 'green' }
-
   const selectedStyle = error ? errorStyle : successStyle
 
   return (

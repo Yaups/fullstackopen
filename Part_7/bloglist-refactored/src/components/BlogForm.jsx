@@ -1,10 +1,15 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { postBlog } from '../reducers/blogsReducer'
+import blogService from '../services/blogs'
+import { setNotification } from '../reducers/messageReducer'
 
-const BlogForm = ({ postBlog }) => {
+const BlogForm = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+  const user = useSelector(({ user }) => user)
+  const dispatch = useDispatch()
 
   const handleBlogSubmit = async (event) => {
     event.preventDefault()
@@ -15,11 +20,27 @@ const BlogForm = ({ postBlog }) => {
       url: blogUrl,
     }
 
-    await postBlog(newBlog)
+    await post(newBlog)
 
     setBlogTitle('')
     setBlogAuthor('')
     setBlogUrl('')
+  }
+
+  const post = async (newBlog) => {
+    try {
+      const verifiedBlog = await blogService.post(newBlog, user.token)
+      const blogToAdd = {
+        ...verifiedBlog,
+        user: { name: user.name, username: user.username },
+      }
+      dispatch(postBlog(blogToAdd))
+      dispatch(
+        setNotification(`New blog added: ${verifiedBlog.title}`, 5, false),
+      )
+    } catch (error) {
+      dispatch(setNotification(error.response.data.error, 5, true))
+    }
   }
 
   return (
@@ -60,10 +81,6 @@ const BlogForm = ({ postBlog }) => {
       </button>
     </form>
   )
-}
-
-BlogForm.propTypes = {
-  postBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

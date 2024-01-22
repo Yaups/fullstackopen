@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../reducers/userReducer'
+import { setNotification } from '../reducers/messageReducer'
 
-const LoginForm = ({ performLogin }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -12,6 +17,25 @@ const LoginForm = ({ performLogin }) => {
 
     setUsername('')
     setPassword('')
+  }
+
+  const performLogin = async (username, password) => {
+    try {
+      const response = await axios.post('/api/login', { username, password })
+
+      if (response) {
+        dispatch(setUser(response.data))
+        window.localStorage.setItem('user', JSON.stringify(response.data))
+      }
+    } catch {
+      dispatch(
+        setNotification(
+          'Login failed. Check username/password and connection to server.',
+          5,
+          true,
+        ),
+      )
+    }
   }
 
   return (
@@ -40,10 +64,6 @@ const LoginForm = ({ performLogin }) => {
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  performLogin: PropTypes.func.isRequired,
 }
 
 export default LoginForm

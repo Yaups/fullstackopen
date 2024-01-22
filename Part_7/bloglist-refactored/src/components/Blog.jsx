@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from 'react-redux'
+import { deleteBlog, upvoteBlog } from '../reducers/blogsReducer'
+import { setNotification } from '../reducers/messageReducer'
 
-const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
+const Blog = ({ blog }) => {
   const [isExpanded, setIsExpanded] = useState(false)
+  const user = useSelector(({ user }) => user)
+  const dispatch = useDispatch()
 
   const blogStyle = {
     paddingTop: 10,
@@ -12,8 +17,22 @@ const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
     marginBottom: 5,
   }
 
+  const handleUpvote = () => {
+    dispatch(upvoteBlog(blog.id, blog))
+    dispatch(setNotification(`Blog liked: ${blog.title}`, 5, false))
+  }
+
+  const handleDeletion = () => {
+    if (window.confirm('Would you really like to delete this post?')) {
+      dispatch(deleteBlog(blog.id))
+      dispatch(
+        setNotification(`Blog ${blog.title} deleted successfully.`, 5, false),
+      )
+    }
+  }
+
   const deleteButton = () => (
-    <button onClick={() => handleDeletion(blog.id)}>Delete</button>
+    <button onClick={() => handleDeletion()}>Delete</button>
   )
 
   const extraInfo = () => (
@@ -23,7 +42,7 @@ const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
       </a>
       <br />
       Likes: {blog.likes} {''}
-      <button onClick={() => handleUpvote(blog.id, blog)}>Like</button>
+      <button onClick={() => handleUpvote()}>Like</button>
       <br />
       Posted by {blog.user.name}.
       <br />
@@ -44,9 +63,6 @@ const Blog = ({ blog, user, handleDeletion, handleUpvote }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-  handleDeletion: PropTypes.func.isRequired,
-  handleUpvote: PropTypes.func.isRequired,
 }
 
 export default Blog
