@@ -1,21 +1,16 @@
-import { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useSelector, useDispatch } from 'react-redux'
-import { deleteBlog, upvoteBlog } from '../reducers/blogsReducer'
+import { upvoteBlog, deleteBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/messageReducer'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import blogService from '../services/blogs'
+import { postBlogComment } from '../reducers/blogsReducer'
 
 const Blog = ({ blog }) => {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [commentText, setCommentText] = useState('')
   const user = useSelector(({ user }) => user)
   const dispatch = useDispatch()
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+  const navigate = useNavigate()
 
   const handleUpvote = () => {
     dispatch(upvoteBlog(blog.id, blog))
@@ -28,6 +23,7 @@ const Blog = ({ blog }) => {
       dispatch(
         setNotification(`Blog ${blog.title} deleted successfully.`, 5, false),
       )
+      navigate('/blogs')
     }
   }
 
@@ -35,34 +31,50 @@ const Blog = ({ blog }) => {
     <button onClick={() => handleDeletion()}>Delete</button>
   )
 
-  const extraInfo = () => (
-    <div>
-      <a href={blog.url} target="_blank" rel="noreferrer">
-        {blog.url}
-      </a>
-      <br />
-      Likes: {blog.likes} {''}
-      <button onClick={() => handleUpvote()}>Like</button>
-      <br />
-      Posted by {blog.user.name}.
-      <br />
-      {blog.user.username === user.username && deleteButton()}
-    </div>
-  )
+  const handleComment = async (event) => {
+    event.preventDefault()
+    dispatch(postBlogComment(blog, commentText))
+    setCommentText('')
+  }
+
+  if (!blog) return null
 
   return (
-    <div style={blogStyle} className="blog">
-      {blog.title} - {blog.author} {''}
-      <button onClick={() => setIsExpanded(!isExpanded)}>
-        {isExpanded ? 'Hide' : 'Show'}
-      </button>
-      {isExpanded && extraInfo()}
+    <div className="blogInfo">
+      <h1>
+        {blog.title} - {blog.author}
+      </h1>
+      <div>
+        <a href={blog.url} target="_blank" rel="noreferrer">
+          {blog.url}
+        </a>
+        <br />
+        Likes: {blog.likes} {''}
+        <button onClick={() => handleUpvote()}>Like</button>
+        <br />
+        Posted by {blog.user.name}.
+        <br />
+        <br />
+        <h2>Comments:</h2>
+        <form>
+          <input
+            placeholder="Your comment here"
+            value={commentText}
+            onChange={({ target }) => setCommentText(target.value)}
+          />
+          <button type="submit" onClick={handleComment}>
+            Post comment
+          </button>
+        </form>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment._id}>{comment.text}</li>
+          ))}
+        </ul>
+        {blog.user.username === user.username && deleteButton()}
+      </div>
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
 }
 
 export default Blog

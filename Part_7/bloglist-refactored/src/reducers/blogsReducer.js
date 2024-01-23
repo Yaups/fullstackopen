@@ -55,6 +55,31 @@ export const upvoteBlog = (id, blogToUpvote) => {
   }
 }
 
+export const postBlogComment = (blog, text) => {
+  return async (dispatch, getState) => {
+    const blogWithComment = {
+      ...blog,
+      comments: blog.comments.concat({ text }),
+    }
+
+    const commentResponse = await blogService.update(blog.id, blogWithComment)
+
+    const blogToReplace = {
+      ...commentResponse,
+      user: {
+        name: blog.user.name,
+        username: blog.user.username,
+      },
+    }
+
+    const blogs = getState().blogs
+    const blogsWithOldRemoved = blogs.filter((b) => b.id !== blogToReplace.id)
+    const blogsWithNewComment = [...blogsWithOldRemoved, blogToReplace]
+
+    dispatch(setAll(blogsWithNewComment))
+  }
+}
+
 export const deleteBlog = (id) => {
   return async (dispatch, getState) => {
     const user = getState().user
