@@ -28,7 +28,15 @@ const Blog = ({ blog }) => {
   }
 
   const deleteButton = () => (
-    <button onClick={() => handleDeletion()}>Delete</button>
+    <button
+      className="button is-danger is-outlined"
+      onClick={() => handleDeletion()}
+    >
+      <span>Delete blog</span>
+      <span className="icon is-small">
+        <i className="fas fa-times"></i>
+      </span>
+    </button>
   )
 
   const handleComment = async (event) => {
@@ -37,41 +45,57 @@ const Blog = ({ blog }) => {
     setCommentText('')
   }
 
+  const listStyle = { listStyleType: 'none' }
+
   if (!blog) return null
 
   return (
-    <div className="blogInfo">
-      <h1>
+    <div className="container is-max-desktop">
+      <h1 className="title">
         {blog.title} - {blog.author}
       </h1>
+      <br />
       <div>
+        Link to blog:{' '}
         <a href={blog.url} target="_blank" rel="noreferrer">
           {blog.url}
         </a>
         <br />
         Likes: {blog.likes} {''}
-        <button onClick={() => handleUpvote()}>Like</button>
+        <button
+          className="button is-small is-rounded"
+          onClick={() => handleUpvote()}
+        >
+          Like
+        </button>
+        <br />
         <br />
         Posted by {blog.user.name}.
         <br />
-        <br />
-        <h2>Comments:</h2>
-        <form>
-          <input
-            placeholder="Your comment here"
-            value={commentText}
-            onChange={({ target }) => setCommentText(target.value)}
-          />
-          <button type="submit" onClick={handleComment}>
-            Post comment
-          </button>
-        </form>
-        <ul>
+        {blog.user.username === user.username && deleteButton()}
+        <hr />
+        <h3 className="title is-4">Comments on this blog:</h3>
+        <ul style={listStyle}>
           {blog.comments.map((comment) => (
             <li key={comment._id}>{comment.text}</li>
           ))}
         </ul>
-        {blog.user.username === user.username && deleteButton()}
+        <br />
+        <form>
+          <div className="field">
+            <div className="control">
+              <input
+                placeholder="Your comment here"
+                value={commentText}
+                onChange={({ target }) => setCommentText(target.value)}
+                className="input"
+              />
+            </div>
+          </div>
+          <button className="button" type="submit" onClick={handleComment}>
+            Post comment
+          </button>
+        </form>
       </div>
     </div>
   )

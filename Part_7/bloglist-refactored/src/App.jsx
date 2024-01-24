@@ -5,25 +5,13 @@ import BlogList from './components/BlogList'
 import Blog from './components/Blog'
 import UsersInfo from './components/UsersInfo'
 import UserInfo from './components/UserInfo'
-import LoggedInAs from './components/LoggedInAs'
+import NavBar from './components/NavBar'
 import { useDispatch, useSelector } from 'react-redux'
 import { initialiseBlogs } from './reducers/blogsReducer'
 import { setUser } from './reducers/userReducer'
 import { setUsers } from './reducers/usersReducer'
 import usersService from './services/users'
 import { Routes, Route, useMatch } from 'react-router-dom'
-
-import { Link } from 'react-router-dom'
-
-const NavBar = () => {
-  return (
-    <nav>
-      <Link to="/blogs">Blogs</Link>
-      {' | '}
-      <Link to="/users">Users</Link>
-    </nav>
-  )
-}
 
 const App = () => {
   const user = useSelector(({ user }) => user)
@@ -72,9 +60,7 @@ const App = () => {
   }
 
   return (
-    <div>
-      <LoggedInAs />
-
+    <div className="container">
       <NavBar />
 
       <Message />

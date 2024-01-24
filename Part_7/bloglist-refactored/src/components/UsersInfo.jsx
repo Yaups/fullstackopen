@@ -28,8 +28,8 @@ const UsersInfo = () => {
 
   return (
     <div>
-      <h2>Users</h2>
-      <table>
+      <h2 className="title">Users</h2>
+      <table className="table is-striped">
         <tbody>
           <tr>
             <th>Name</th>

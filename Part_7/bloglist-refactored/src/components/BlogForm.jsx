@@ -44,42 +44,60 @@ const BlogForm = () => {
   }
 
   return (
-    <form>
-      Title: {''}
-      <input
-        type="text"
-        value={blogTitle}
-        onChange={({ target }) => setBlogTitle(target.value)}
-        placeholder="Title of blog"
-        id="blogForm-title-input"
-      />
-      <br />
-      Author: {''}
-      <input
-        type="text"
-        value={blogAuthor}
-        onChange={({ target }) => setBlogAuthor(target.value)}
-        placeholder="Author of blog"
-        id="blogForm-author-input"
-      />
-      <br />
-      URL: {''}
-      <input
-        type="text"
-        value={blogUrl}
-        onChange={({ target }) => setBlogUrl(target.value)}
-        placeholder="Link to blog post"
-        id="blogForm-url-input"
-      />
-      <br />
-      <button
-        type="submit"
-        onClick={handleBlogSubmit}
-        id="blogForm-post-button"
-      >
-        Add blog
-      </button>
-    </form>
+    <div className="container is-max-desktop">
+      <form className="form">
+        <div className="field">
+          <label className="label">Title</label>
+          <div className="control">
+            <input
+              type="text"
+              value={blogTitle}
+              onChange={({ target }) => setBlogTitle(target.value)}
+              placeholder="Title of blog"
+              id="blogForm-title-input"
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Author</label>
+          <div className="control">
+            <input
+              type="text"
+              value={blogAuthor}
+              onChange={({ target }) => setBlogAuthor(target.value)}
+              placeholder="Author of blog"
+              id="blogForm-author-input"
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">URL</label>
+          <div className="control">
+            <input
+              type="text"
+              value={blogUrl}
+              onChange={({ target }) => setBlogUrl(target.value)}
+              placeholder="Link to blog post"
+              id="blogForm-url-input"
+              className="input"
+            />
+          </div>
+        </div>
+        <button
+          className="button is-success"
+          type="submit"
+          onClick={handleBlogSubmit}
+          id="blogForm-post-button"
+        >
+          <span className="icon is-small">
+            <i className="fas fa-check"></i>
+          </span>
+          <span>Add blog</span>
+        </button>
+      </form>
+    </div>
   )
 }
 

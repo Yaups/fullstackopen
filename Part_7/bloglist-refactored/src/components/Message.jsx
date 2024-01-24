@@ -8,20 +8,12 @@ const Message = () => {
 
   if (!message) return null
 
-  const baseStyle = {
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-  const errorStyle = { ...baseStyle, color: 'red' }
-  const successStyle = { ...baseStyle, color: 'green' }
+  const errorStyle = 'notification is-danger is-light'
+  const successStyle = 'notification is-success is-light'
   const selectedStyle = error ? errorStyle : successStyle
 
   return (
-    <div id="notification-message" style={selectedStyle}>
+    <div id="notification-message" className={selectedStyle}>
       {message}
     </div>
   )

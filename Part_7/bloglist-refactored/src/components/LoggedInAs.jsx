@@ -12,11 +12,10 @@ const LoggedInAs = () => {
 
   return (
     <div>
-      <li>
-        <i>Logged in as {user.name}</i>
-      </li>
-      <button onClick={logout}>Log out</button>
-      <hr />
+      <i>Logged in as {user.name}</i>{' '}
+      <button className="button is-small is-rounded" onClick={logout}>
+        Log out
+      </button>
     </div>
   )
 }

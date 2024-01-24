@@ -38,26 +38,40 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
-      <h2>Log in:</h2>
-      <form>
-        Username: {''}
-        <input
-          type="text"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-          id="login-username"
-        />
-        <br />
-        Password: {''}
-        <input
-          type="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          id="login-password"
-        />
-        <br />
-        <button type="submit" onClick={handleSubmit} id="login-button">
+    <div className="container is-max-desktop">
+      <br />
+      <h2 className="title">Log in:</h2>
+      <form className="form">
+        <div className="field">
+          <label className="label">Username</label>
+          <div className="control">
+            <input
+              type="text"
+              value={username}
+              onChange={({ target }) => setUsername(target.value)}
+              id="login-username"
+              className="input"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Password</label>
+          <div className="control">
+            <input
+              type="password"
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+              id="login-password"
+              className="input"
+            />
+          </div>
+        </div>
+        <button
+          className="button"
+          type="submit"
+          onClick={handleSubmit}
+          id="login-button"
+        >
           Log in
         </button>
       </form>
