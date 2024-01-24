@@ -8,7 +8,6 @@ const BlogList = () => {
 
   const blogStyle = {
     paddingTop: 10,
-    paddingLeft: 2,
     marginBottom: 5,
   }
 
