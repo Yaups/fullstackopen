@@ -25,7 +25,7 @@ const NavBar = () => {
             className="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
-            data-target="navbar-blogs"
+            data-target="navbar-blogapp"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -33,7 +33,7 @@ const NavBar = () => {
           </a>
         </div>
 
-        <div id="navbar-blogs" className="navbar-menu">
+        <div id="navbar-blogapp" className="navbar-menu">
           <div className="navbar-start">
             <Link className="navbar-item" to="/blogs">
               Blogs
