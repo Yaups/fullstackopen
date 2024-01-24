@@ -3,7 +3,6 @@ import { setNotification } from '../reducers/messageReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import blogService from '../services/blogs'
 import { postBlogComment } from '../reducers/blogsReducer'
 
 const Blog = ({ blog }) => {
