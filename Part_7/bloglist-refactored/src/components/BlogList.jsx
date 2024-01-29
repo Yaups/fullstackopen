@@ -19,18 +19,17 @@ const BlogList = () => {
         <BlogForm />
       </Togglable>
       <br />
-      <div className="container is-max-desktop">
+      <div className="container">
         {blogs
           .toSorted((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <div
-              key={blog.id}
-              style={blogStyle}
-              className="has-background-primary-light"
-            >
-              <Link to={`/blogs/${blog.id}`}>
-                {blog.title} - {blog.author}
-              </Link>
+            <div key={blog.id}>
+              <div style={blogStyle} className="button is-light">
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} - {blog.author}
+                </Link>
+              </div>
+              <br />
             </div>
           ))}
       </div>

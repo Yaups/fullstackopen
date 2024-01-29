@@ -44,7 +44,7 @@ const BlogForm = () => {
   }
 
   return (
-    <div className="container is-max-desktop">
+    <div className="container">
       <form className="form">
         <div className="field">
           <label className="label">Title</label>
