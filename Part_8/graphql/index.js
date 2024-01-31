@@ -93,6 +93,7 @@ const typeDefs = `
     published: Int!
     author: String!
     genres: [String!]!
+    id: String!
   }
 
   type Query {
