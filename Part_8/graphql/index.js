@@ -26,7 +26,7 @@ const typeDefs = `
   type User {
     username: String!
     favoriteGenre: String!
-    id: ID!
+    _id: ID!
   }
 
   type Token {
@@ -35,7 +35,7 @@ const typeDefs = `
 
   type Author {
     name: String!
-    id: ID!
+    _id: ID!
     born: Int
     bookCount: Int!
   }
@@ -45,7 +45,7 @@ const typeDefs = `
     published: Int!
     author: Author!
     genres: [String!]!
-    id: ID!
+    _id: ID!
   }
 
   type Query {
@@ -87,7 +87,8 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
       const byGenre = args.genre ? { genres: args.genre } : {}
-      return Book.find(byGenre)
+      const response = await Book.find(byGenre).populate('author')
+      return response
     },
     allAuthors: async () => Author.find({}),
     authorCount: async () => Author.collection.countDocuments(),
@@ -102,6 +103,16 @@ const resolvers = {
       return count
     },
     */
+  },
+  Book: {
+    author: (root) => {
+      return {
+        name: root.author.name,
+        id: root.author._id,
+        born: root.author.born,
+        //bookCount: root.author.bookCount???
+      }
+    },
   },
   Mutation: {
     createUser: async (root, args) => {
@@ -136,6 +147,8 @@ const resolvers = {
       return { value: jwt.sign(toEncode, process.env.JWT_SECRET) }
     },
     addBook: async (root, args, { currentUser }) => {
+      console.log('request to add book received')
+
       if (!currentUser) {
         throw new GraphQLError('You must be logged in to add a book!', {
           extensions: { code: 'BAD_USER_INPUT' },
@@ -164,7 +177,10 @@ const resolvers = {
 
       try {
         const book = new Book({ ...args, author: author._id })
-        return book.save()
+        console.log(book)
+        await book.save()
+        const toReturn = await book.populate('author')
+        return toReturn
       } catch (error) {
         throw new GraphQLError('Saving book failed.', {
           extensions: {

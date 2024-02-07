@@ -14,8 +14,6 @@ const Authors = (props) => {
     event.preventDefault()
     const yearAsNumber = Number(updatedBirthYear)
 
-    console.log(authorToUpdate, updatedBirthYear)
-
     updateAuthor({
       variables: { name: authorToUpdate.value, setBornTo: yearAsNumber },
     })
