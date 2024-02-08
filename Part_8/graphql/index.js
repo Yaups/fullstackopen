@@ -29,8 +29,11 @@ const typeDefs = `
     _id: ID!
   }
 
-  type Token {
-    value: String!
+  type LoginResponse {
+    token: String!
+    username: String!
+    favoriteGenre: String!
+    _id: ID!
   }
 
   type Author {
@@ -77,7 +80,7 @@ const typeDefs = `
     login(
       username: String!
       password: String!
-    ): Token
+    ): LoginResponse
   }
 `
 
@@ -144,11 +147,12 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(toEncode, process.env.JWT_SECRET) }
+      return {
+        ...user.toObject(),
+        token: jwt.sign(toEncode, process.env.JWT_SECRET),
+      }
     },
     addBook: async (root, args, { currentUser }) => {
-      console.log('request to add book received')
-
       if (!currentUser) {
         throw new GraphQLError('You must be logged in to add a book!', {
           extensions: { code: 'BAD_USER_INPUT' },

@@ -5,6 +5,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import { useApolloClient } from '@apollo/client'
+import Recommended from './components/Recommended'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -18,8 +19,15 @@ const App = () => {
     const storedToken = JSON.parse(
       JSON.stringify(localStorage.getItem('library-token'))
     )
+    const storedGenre = JSON.parse(
+      JSON.stringify(localStorage.getItem('library-favoriteGenre'))
+    )
     if (storedUser && storedToken) {
-      setUser({ username: storedUser, token: storedToken })
+      setUser({
+        username: storedUser,
+        favoriteGenre: storedGenre,
+        token: storedToken,
+      })
     }
   }, [])
 
@@ -43,6 +51,9 @@ const App = () => {
         <button onClick={() => setPage('books')}>Books</button>
         {user && <button onClick={() => setPage('add')}>Add book</button>}
         {!user && <button onClick={() => setPage('loginForm')}>Log in</button>}
+        {user && (
+          <button onClick={() => setPage('recommended')}>Recommended</button>
+        )}
         {user && <button onClick={logout}>Log out</button>}
       </div>
 
@@ -57,6 +68,8 @@ const App = () => {
       <Books show={page === 'books'} />
 
       <NewBook show={page === 'add'} />
+
+      <Recommended show={page === 'recommended'} user={user} />
     </div>
   )
 }
