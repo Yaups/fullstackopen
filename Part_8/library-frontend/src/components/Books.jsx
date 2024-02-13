@@ -14,6 +14,7 @@ const Books = (props) => {
 
   const books = result.data.allBooks || []
   const filteredBooks = genreResult.data.allBooks || []
+  const booksToShow = filterGenre ? filteredBooks : books
 
   const genres = books.map((b) => [...b.genres]).flat()
   const uniqueGenres = [...new Set(genres)]
@@ -34,7 +35,7 @@ const Books = (props) => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {filteredBooks.map((b) => (
+          {booksToShow.map((b) => (
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>

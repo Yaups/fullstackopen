@@ -4,6 +4,20 @@ import { useState } from 'react'
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
 import { useApolloClient } from '@apollo/client'
 
+const updateCache = (cache, query, addedBook) => {
+  const uniqById = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item._id
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return { allBooks: uniqById(allBooks.concat(addedBook)) }
+  })
+}
+
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -11,8 +25,12 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
   const client = useApolloClient()
+
   const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    update: (cache, response) => {
+      updateCache(cache, { query: ALL_BOOKS }, response.data.addBook)
+    },
   })
 
   if (!props.show) {

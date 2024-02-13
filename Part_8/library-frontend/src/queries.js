@@ -32,11 +32,11 @@ export const ALL_AUTHORS = gql`
     allAuthors {
       name
       born
+      bookCount
       _id
     }
   }
 `
-//bookCount in ALL_AUTHORS
 
 export const ME = gql`
   query {
@@ -63,6 +63,7 @@ export const CREATE_BOOK = gql`
     ) {
       title
       published
+      _id
       author {
         name
       }
@@ -76,11 +77,11 @@ export const UPDATE_AUTHOR = gql`
     editAuthor(name: $name, setBornTo: $setBornTo) {
       name
       born
+      bookCount
       _id
     }
   }
 `
-//bookCount in UPDATE_AUTHOR
 
 export const LOG_IN = gql`
   mutation log_in($username: String!, $password: String!) {
@@ -88,6 +89,19 @@ export const LOG_IN = gql`
       token
       username
       favoriteGenre
+    }
+  }
+`
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      title
+      published
+      genres
+      _id
+      author {
+        name
+      }
     }
   }
 `
