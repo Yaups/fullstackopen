@@ -21,21 +21,21 @@ export const parseArguments = (args: string[]): CalculatorInputs => {
   if (args.length < 4) throw new Error('Not enough arguments');
 
   const dailyHours: number[] = [];
-  for (let i: number = 0; i < args.length - 3; i++) {
-    dailyHours[i] = Number(args[i + 3]);
+  for (let i: number = 0; i < args.length - 1; i++) {
+    dailyHours[i] = Number(args[i + 1]);
   }
 
-  if (!isNaN(Number(args[2])) && !hasNan(dailyHours)) {
+  if (!isNaN(Number(args[0])) && !hasNan(dailyHours)) {
     return {
-      target: Number(args[2]),
+      target: Number(args[0]),
       dailyHours,
     };
   } else {
-    throw new Error('Provided values were not numbers!');
+    throw new Error('Malformatted parameters');
   }
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   target: number,
   dailyHours: number[]
 ): ExerciseAnalysis => {
@@ -68,13 +68,19 @@ const calculateExercises = (
   };
 };
 
-try {
-  const { target, dailyHours } = parseArguments(process.argv);
-  console.log(calculateExercises(target, dailyHours));
-} catch (error: unknown) {
-  let errorMessage = 'Encountered an error.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+/*
+const main = (): void => {
+  try {
+    const { target, dailyHours } = parseArguments(process.argv);
+    console.log(calculateExercises(target, dailyHours));
+  } catch (error: unknown) {
+    let errorMessage = 'Encountered an error.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
-}
+};
+
+main();
+*/

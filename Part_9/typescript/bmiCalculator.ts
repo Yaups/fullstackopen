@@ -4,20 +4,25 @@ interface BmiInputValues {
 }
 
 export const parseArguments = (args: string[]): BmiInputValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-  if (args.length > 4) throw new Error('Too many arguments');
+  if (args.length < 2) throw new Error('Not enough arguments');
+  if (args.length > 2) throw new Error('Too many arguments');
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+  if (!isNaN(Number(args[0])) && !isNaN(Number(args[1]))) {
     return {
-      heightInCm: Number(args[2]),
-      weightInKg: Number(args[3]),
+      heightInCm: Number(args[0]),
+      weightInKg: Number(args[1]),
     };
   } else {
-    throw new Error('Provided values were not numbers!');
+    throw new Error(
+      'Malformatted parameters: Both height and weight must be given as numbers.'
+    );
   }
 };
 
-const calculateBmi = (heightInCm: number, weightInKg: number): string => {
+export const calculateBmi = (
+  heightInCm: number,
+  weightInKg: number
+): string => {
   const heightInMetres: number = heightInCm / 100;
   const bmi: number = weightInKg / (heightInMetres ^ 2);
 
@@ -30,13 +35,19 @@ const calculateBmi = (heightInCm: number, weightInKg: number): string => {
   return 'Healthy weight';
 };
 
-try {
-  const { heightInCm, weightInKg } = parseArguments(process.argv);
-  console.log(calculateBmi(heightInCm, weightInKg));
-} catch (error: unknown) {
-  let errorMessage = 'Encountered an error.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+/*
+const main = (): void => {
+  try {
+    const { heightInCm, weightInKg } = parseArguments(process.argv);
+    console.log(calculateBmi(heightInCm, weightInKg));
+  } catch (error: unknown) {
+    let errorMessage = 'Encountered an error.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
-}
+};
+
+main();
+*/
