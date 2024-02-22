@@ -17,34 +17,21 @@ const addNewPatient = (newPatient: NewPatient): NonSensitivePatient => {
 
   console.log('Patients then:', patients);
 
-  //add id field to patient
-
-  /*
-  const spoof: Patient = {
-    id: uuid(),
-    name: 'spoof spooferson',
-    dateOfBirth: '1990-01-01',
-    ssn: '234234',
-    gender: 'male',
-    occupation: 'spoof job',
-  };
-  */
-
-  const spoof: Patient = {
+  const patientToAdd: Patient = {
     id: uuid(),
     ...newPatient,
   };
 
-  patients.push(spoof);
+  patients.push(patientToAdd);
 
   console.log('Patients now:', patients);
 
   return {
-    id: spoof.id,
-    name: spoof.name,
-    dateOfBirth: spoof.dateOfBirth,
-    gender: spoof.gender,
-    occupation: spoof.occupation,
+    id: patientToAdd.id,
+    name: patientToAdd.name,
+    dateOfBirth: patientToAdd.dateOfBirth,
+    gender: patientToAdd.gender,
+    occupation: patientToAdd.occupation,
   };
 };
 
