@@ -40,4 +40,10 @@ export interface EntriesProps {
 export interface EntryFormProps {
   entries: DiaryEntry[];
   setEntries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface NotificationProps {
+  errorMessage: ErrorMessage;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }

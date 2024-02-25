@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { DiaryEntry } from "./types";
+import { DiaryEntry, ErrorMessage } from "./types";
 import Entries from "./components/Entries";
 import diaryService from "./services/diaryService";
 import EntryForm from "./components/EntryForm";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>("");
 
   useEffect(() => {
     const initialiseEntries = async (): Promise<void> => {
@@ -18,7 +20,17 @@ const App = () => {
 
   return (
     <div>
-      <EntryForm entries={entries} setEntries={setEntries} />
+      {errorMessage !== "" && (
+        <Notification
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        />
+      )}
+      <EntryForm
+        entries={entries}
+        setEntries={setEntries}
+        setErrorMessage={setErrorMessage}
+      />
       <Entries entries={entries} />
     </div>
   );

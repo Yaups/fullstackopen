@@ -9,7 +9,6 @@ import diaryService from "../services/diaryService";
 import { useState } from "react";
 
 const EntryForm = (props: EntryFormProps) => {
-  const [errorMessage, setErrorMessage] = useState<ErrorMessage>("");
   const [date, setDate] = useState<string>("");
   const [visibility, setVisibility] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
@@ -35,17 +34,13 @@ const EntryForm = (props: EntryFormProps) => {
       setComment("");
     } catch (error: unknown) {
       const verifiedMessage: ErrorMessage = diaryService.verifyError(error);
-      setErrorMessage(verifiedMessage);
-      setTimeout(() => setErrorMessage(""), 5000);
+      props.setErrorMessage(verifiedMessage);
     }
   };
-
-  const notification = () => <h4 style={{ color: "red" }}>{errorMessage}</h4>;
 
   return (
     <div>
       <h2>Add a new entry:</h2>
-      {errorMessage !== "" && notification()}
       <form onSubmit={handleSubmit}>
         Date:{" "}
         <input
