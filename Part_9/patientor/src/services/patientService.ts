@@ -12,6 +12,15 @@ const getAllNonSensitivePatients = (): NonSensitivePatient[] => {
   }));
 };
 
+const getPatient = (id: string): Patient => {
+  const patient = patients.find((p) => p.id === id);
+  if (patient !== undefined) {
+    return patient;
+  }
+
+  throw new Error('No patient found!');
+};
+
 const addNewPatient = (newPatient: NewPatient): NonSensitivePatient => {
   console.log('New patient added!', newPatient);
 
@@ -35,4 +44,4 @@ const addNewPatient = (newPatient: NewPatient): NonSensitivePatient => {
   };
 };
 
-export default { getAllNonSensitivePatients, addNewPatient };
+export default { getAllNonSensitivePatients, getPatient, addNewPatient };
