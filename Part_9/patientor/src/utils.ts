@@ -42,6 +42,27 @@ const isGender = (param: string): param is Gender => {
     .includes(param);
 };
 
+const isObject = (input: unknown): input is object => {
+  return typeof input === 'object' || input instanceof Object;
+};
+
+const isArray = (input: unknown): input is unknown[] => {
+  return Array.isArray(input);
+};
+
+const isEntries = (input: unknown[]): input is Entry[] => {
+  return input.every((item) => isObject(item) && isEntry(item));
+};
+
+const isEntry = (object: object): object is Entry => {
+  if ('type' in object)
+    return (
+      object.type === ('Hospital' || 'OccupationalHealthcare' || 'HealthCheck')
+    );
+
+  return false;
+};
+
 const parseName = (name: unknown): string => {
   if (!isString(name)) {
     throw new Error('Incorrect or missing name');
@@ -78,8 +99,10 @@ const parseOccupation = (occupation: unknown): string => {
 };
 
 const parseEntries = (entries: unknown): Entry[] => {
-  //if (!isEntries(entries))
-  return entries as Entry[];
+  if (!isArray(entries) || !isEntries(entries)) {
+    throw new Error('Incorrect or missing entries');
+  }
+  return entries;
 };
 
 export default toNewPatient;
