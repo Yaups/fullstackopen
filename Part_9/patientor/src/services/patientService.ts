@@ -7,7 +7,6 @@ import {
   NewEntry,
 } from '../types';
 import { v1 as uuid } from 'uuid';
-import { parseEntries } from '../utils';
 
 const getAllNonSensitivePatients = (): NonSensitivePatient[] => {
   return patients.map((patient) => ({
@@ -23,10 +22,6 @@ const getPatient = (id: string): Patient => {
   const patient = patients.find((p) => p.id === id);
   if (patient === undefined) {
     throw new Error('No patient found!');
-  }
-
-  if (!parseEntries(patient.entries)) {
-    throw new Error('Incorrect or missing entries');
   }
 
   return patient;
