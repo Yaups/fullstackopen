@@ -15,7 +15,11 @@ const Togglable = (props: TogglableProps) => {
     <div>
       <div style={style}>{props.children}</div>
       <br />
-      <Button variant="outlined" onClick={() => setVisible(!visible)}>
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => setVisible(!visible)}
+      >
         {visible ? "Cancel" : props.buttonText}
       </Button>
     </div>

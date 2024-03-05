@@ -1,12 +1,12 @@
 {
-  "name": "flight-diary",
+  "name": "patientor",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "start": "node build/index.js",
+    "start": "node build/src/index.js",
     "lint": "eslint --ext .ts ."
   },
   "author": "",

@@ -30,6 +30,7 @@ const getPatient = (id: string): Patient => {
 const addNewPatient = (newPatient: NewPatient): NonSensitivePatient => {
   const patientToAdd: Patient = {
     id: uuid(),
+    entries: [],
     ...newPatient,
   };
 

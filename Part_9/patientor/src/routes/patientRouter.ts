@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
     }
-    res.status(400).json({ error: errorMessage });
+    res.status(400).send(errorMessage);
   }
 });
 
@@ -32,14 +32,12 @@ router.post('/', (req, res) => {
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
     }
-    res.status(400).json({ error: errorMessage });
+    res.status(400).send(errorMessage);
   }
 });
 
 router.post('/:id/entries', (req, res) => {
   try {
-    console.log('New entry request received!');
-
     const id = req.params.id;
     const newEntry = toNewEntry(req.body);
     const toSend = patientService.addNewEntry(id, newEntry);
@@ -49,7 +47,7 @@ router.post('/:id/entries', (req, res) => {
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
     }
-    res.status(400).json({ error: errorMessage });
+    res.status(400).send(errorMessage);
   }
 });
 

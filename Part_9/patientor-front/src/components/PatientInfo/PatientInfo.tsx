@@ -17,6 +17,8 @@ const assertNever = (value: never): never => {
 
 interface PatientInfoProps {
   patient: Patient | null | undefined;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
 }
 
 interface EntryInfoProps {
@@ -103,6 +105,8 @@ const PatientInfo = (props: PatientInfoProps) => {
           patient={patient}
           setErrorMessage={setErrorMessage}
           diagnoses={diagnoses}
+          patients={props.patients}
+          setPatients={props.setPatients}
         />
       </Togglable>
     </div>

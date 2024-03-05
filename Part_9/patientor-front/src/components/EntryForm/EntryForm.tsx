@@ -9,11 +9,19 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 interface EntryFormProps {
   patient: Patient;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   diagnoses: Diagnosis[] | null;
 }
 
-const EntryForm = ({ patient, diagnoses, setErrorMessage }: EntryFormProps) => {
+const EntryForm = ({
+  patient,
+  patients,
+  setPatients,
+  diagnoses,
+  setErrorMessage,
+}: EntryFormProps) => {
   const [formType, setFormType] = useState<EntryType>("HealthCheck");
 
   const style = { border: "1px dashed", padding: "5px", borderRadius: "10px" };
@@ -42,6 +50,8 @@ const EntryForm = ({ patient, diagnoses, setErrorMessage }: EntryFormProps) => {
       {formType === "HealthCheck" && (
         <HealthCheckEntryForm
           patient={patient}
+          patients={patients}
+          setPatients={setPatients}
           setErrorMessage={setErrorMessage}
           diagnoses={diagnoses}
         />
@@ -49,6 +59,8 @@ const EntryForm = ({ patient, diagnoses, setErrorMessage }: EntryFormProps) => {
       {formType === "Hospital" && (
         <HospitalEntryForm
           patient={patient}
+          patients={patients}
+          setPatients={setPatients}
           setErrorMessage={setErrorMessage}
           diagnoses={diagnoses}
         />
@@ -56,6 +68,8 @@ const EntryForm = ({ patient, diagnoses, setErrorMessage }: EntryFormProps) => {
       {formType === "OccupationalHealthcare" && (
         <OccupationalEntryForm
           patient={patient}
+          patients={patients}
+          setPatients={setPatients}
           setErrorMessage={setErrorMessage}
           diagnoses={diagnoses}
         />

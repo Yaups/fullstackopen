@@ -23,6 +23,8 @@ import {
 
 interface EntryFormProps {
   patient: Patient;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   diagnoses: Diagnosis[] | null;
 }
@@ -49,6 +51,8 @@ const getStyles = (code: string, diagnosisCode: string[], theme: Theme) => {
 
 const HospitalEntryForm = ({
   patient,
+  patients,
+  setPatients,
   diagnoses,
   setErrorMessage,
 }: EntryFormProps) => {
@@ -79,8 +83,6 @@ const HospitalEntryForm = ({
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    console.log("Submitting form for", patient.name);
-
     const values: HospitalEntryFormValues = {
       type: "Hospital",
       description,
@@ -96,9 +98,14 @@ const HospitalEntryForm = ({
     try {
       const newEntry = await patientService.createEntry(patient.id, values);
 
-      console.log("New entry is: ", newEntry);
-
-      //CONCAT NEW ENTRY INTO PATIENT'S ENTRIES
+      const patientToReplace = {
+        ...patient,
+        entries: patient.entries.concat(newEntry),
+      };
+      const patientsToSet = patients.map((p) =>
+        p.id === patient.id ? patientToReplace : p
+      );
+      setPatients(patientsToSet);
 
       setDescription("");
       setDate("");
@@ -107,7 +114,7 @@ const HospitalEntryForm = ({
       setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage(error.response.data);
       } else {
         setErrorMessage("Unknown error occurred!");
       }
@@ -119,8 +126,7 @@ const HospitalEntryForm = ({
       <FormControl fullWidth>
         <TextField
           multiline={true}
-          required={true}
-          label="Description"
+          label="Description *"
           variant="outlined"
           type="text"
           value={description}
@@ -131,7 +137,6 @@ const HospitalEntryForm = ({
       <br />
       <InputLabel id="date">Date *</InputLabel>
       <Input
-        required={true}
         type="date"
         value={date}
         onChange={({ target }) => setDate(target.value)}
@@ -139,8 +144,7 @@ const HospitalEntryForm = ({
       <br />
       <br />
       <TextField
-        required={true}
-        label="Specialist"
+        label="Specialist *"
         variant="outlined"
         type="text"
         value={specialist}
@@ -162,8 +166,7 @@ const HospitalEntryForm = ({
       <FormControl fullWidth>
         <TextField
           multiline={true}
-          required={true}
-          label="Discharge criteria"
+          label="Discharge criteria *"
           variant="outlined"
           type="text"
           value={discharge.criteria}

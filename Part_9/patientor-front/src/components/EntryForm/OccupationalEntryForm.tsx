@@ -23,6 +23,8 @@ import {
 
 interface EntryFormProps {
   patient: Patient;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   diagnoses: Diagnosis[] | null;
 }
@@ -49,6 +51,8 @@ const getStyles = (code: string, diagnosisCode: string[], theme: Theme) => {
 
 const OccupationalEntryForm = ({
   patient,
+  patients,
+  setPatients,
   diagnoses,
   setErrorMessage,
 }: EntryFormProps) => {
@@ -80,8 +84,6 @@ const OccupationalEntryForm = ({
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    console.log("Submitting form for", patient.name);
-
     const values: OccupationalEntryFormValues = {
       type: "OccupationalHealthcare",
       description,
@@ -94,16 +96,21 @@ const OccupationalEntryForm = ({
       values.diagnosisCodes = diagnosisCodes;
     }
 
-    if (sickLeave.endDate && sickLeave.startDate) {
+    if (sickLeave.endDate !== "" && sickLeave.startDate !== "") {
       values.sickLeave = sickLeave;
     }
 
     try {
       const newEntry = await patientService.createEntry(patient.id, values);
 
-      console.log("New entry is: ", newEntry);
-
-      //CONCAT NEW ENTRY INTO PATIENT'S ENTRIES
+      const patientToReplace = {
+        ...patient,
+        entries: patient.entries.concat(newEntry),
+      };
+      const patientsToSet = patients.map((p) =>
+        p.id === patient.id ? patientToReplace : p
+      );
+      setPatients(patientsToSet);
 
       setDescription("");
       setDate("");
@@ -113,7 +120,7 @@ const OccupationalEntryForm = ({
       setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage(error.response.data);
       } else {
         setErrorMessage("Unknown error occurred!");
       }
@@ -125,8 +132,7 @@ const OccupationalEntryForm = ({
       <FormControl fullWidth>
         <TextField
           multiline={true}
-          required={true}
-          label="Description"
+          label="Description *"
           variant="outlined"
           type="text"
           value={description}
@@ -137,7 +143,6 @@ const OccupationalEntryForm = ({
       <br />
       <InputLabel id="date">Date *</InputLabel>
       <Input
-        required={true}
         type="date"
         value={date}
         onChange={({ target }) => setDate(target.value)}
@@ -145,8 +150,7 @@ const OccupationalEntryForm = ({
       <br />
       <br />
       <TextField
-        required={true}
-        label="Specialist"
+        label="Specialist *"
         variant="outlined"
         type="text"
         value={specialist}
@@ -155,8 +159,7 @@ const OccupationalEntryForm = ({
       <br />
       <br />
       <TextField
-        required={true}
-        label="Employer"
+        label="Employer *"
         variant="outlined"
         type="text"
         value={employerName}
@@ -168,7 +171,6 @@ const OccupationalEntryForm = ({
         Sick leave start date (Optional)
       </InputLabel>
       <Input
-        required={true}
         type="date"
         value={sickLeave.startDate}
         onChange={({ target }) =>
@@ -181,7 +183,6 @@ const OccupationalEntryForm = ({
         Sick leave end date (Optional)
       </InputLabel>
       <Input
-        required={true}
         type="date"
         value={sickLeave.endDate}
         onChange={({ target }) =>

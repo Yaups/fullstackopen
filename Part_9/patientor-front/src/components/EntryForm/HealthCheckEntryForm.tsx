@@ -23,6 +23,8 @@ import TextField from "@mui/material/TextField";
 
 interface EntryFormProps {
   patient: Patient;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   diagnoses: Diagnosis[] | null;
 }
@@ -47,8 +49,14 @@ const getStyles = (code: string, diagnosisCode: string[], theme: Theme) => {
   };
 };
 
+const isString = (text: unknown): text is string => {
+  return typeof text === "string" || text instanceof String;
+};
+
 const HealthCheckEntryForm = ({
   patient,
+  patients,
+  setPatients,
   diagnoses,
   setErrorMessage,
 }: EntryFormProps) => {
@@ -77,8 +85,6 @@ const HealthCheckEntryForm = ({
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    console.log("Submitting form for", patient.name);
-
     const values: HealthCheckEntryFormValues = {
       type: "HealthCheck",
       description,
@@ -94,9 +100,14 @@ const HealthCheckEntryForm = ({
     try {
       const newEntry = await patientService.createEntry(patient.id, values);
 
-      console.log("New entry is: ", newEntry);
-
-      //CONCAT NEW ENTRY INTO PATIENT'S ENTRIES
+      const patientToReplace = {
+        ...patient,
+        entries: patient.entries.concat(newEntry),
+      };
+      const patientsToSet = patients.map((p) =>
+        p.id === patient.id ? patientToReplace : p
+      );
+      setPatients(patientsToSet);
 
       setDescription("");
       setDate("");
@@ -105,7 +116,7 @@ const HealthCheckEntryForm = ({
       setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage(error.response.data);
       } else {
         setErrorMessage("Unknown error occurred!");
       }
@@ -117,8 +128,7 @@ const HealthCheckEntryForm = ({
       <FormControl fullWidth>
         <TextField
           multiline={true}
-          required={true}
-          label="Description"
+          label="Description *"
           variant="outlined"
           type="text"
           value={description}
@@ -129,7 +139,6 @@ const HealthCheckEntryForm = ({
       <br />
       <InputLabel id="date">Date *</InputLabel>
       <Input
-        required={true}
         type="date"
         value={date}
         onChange={({ target }) => setDate(target.value)}
@@ -137,8 +146,7 @@ const HealthCheckEntryForm = ({
       <br />
       <br />
       <TextField
-        required={true}
-        label="Specialist"
+        label="Specialist *"
         variant="outlined"
         type="text"
         value={specialist}
@@ -149,14 +157,14 @@ const HealthCheckEntryForm = ({
       <FormControl>
         <InputLabel id="health-rating">Rating *</InputLabel>
         <Select
-          required={true}
           labelId="health-rating"
           id="health-rating-select"
           value={healthCheckRating}
           label="Health rating"
-          onChange={({ target }) =>
-            setHealthCheckRating(target.value as HealthCheckRating)
-          }
+          onChange={({ target }) => {
+            const value = target.value;
+            if (!isString(value)) setHealthCheckRating(value);
+          }}
         >
           <MenuItem value={0}>Healthy</MenuItem>
           <MenuItem value={1}>Low risk</MenuItem>
